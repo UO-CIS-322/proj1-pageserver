@@ -8,7 +8,7 @@ A "getting started" project for CIS 322, software engineering 1 at University of
   * Initial experience with GIT workflow:  Fork the project, make and test changes locally, commit;  turn in repository URL
   * Extend a tiny web server in Python, to check understanding of basic web architecture
 
-### How do I get set up? ###
+### What do I need?  Where will it work? ###
 
 * Designed for Unix, mostly interoperable on Linux (Ubuntu) or MacOS.  May also work on Windows, but no promises.  Consider creating a Linux virtual machine under Windows if you have trouble there, or just work on ix. 
 * You will need Python version 3.4 or higher. 
