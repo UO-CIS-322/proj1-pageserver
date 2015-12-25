@@ -1,6 +1,5 @@
 """
-Socket programming in Python
-  as an illustration of the basic mechanisms of a web server.
+  A trivial web server in Python. 
 
   Based largely on https://docs.python.org/3.4/howto/sockets.html
   This trivial implementation is not robust:  We have omitted decent
@@ -9,13 +8,14 @@ Socket programming in Python
 
   FIXME:
   Currently this program always serves an ascii graphic of a cat.
-  Change it to serve files if they end with .html and are in the current directory
+  Change it to serve files if they end with .html or .css, and are
+  located in ./pages  (where '.' is the directory from which this
+  program is run).  
 """
 
+import CONFIG    # Configuration options. Create by editing CONFIG.base.py
 import socket    # Basic TCP/IP communication on the internet
-import random    # To pick a port at random, giving us some chance to pick a port not in use
 import _thread   # Response computation runs concurrently with main program 
-
 
 def listen(portnum):
     """
@@ -51,16 +51,27 @@ def serve(sock, func):
         _thread.start_new_thread(func, (clientsocket,))
 
 
+##
+## Starter version only serves cat pictures. In fact, only a
+## particular cat picture.  This one.
+##
 CAT = """
      ^ ^
    =(   )=
    """
 
+## HTTP response codes, as the strings we will actually send. 
+##   See:  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+##   or    http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+## 
+STATUS_OK = "HTTP/1.0 200 OK\n\n"
+STATUS_FORBIDDEN = "HTTP/1.0 403 Forbidden\n\n"
+STATUS_NOT_FOUND = "HTTP/1.0 404 Not Found\n\n"
+STATUS_NOT_IMPLEMENTED = "HTTP/1.0 401 Not Implemented\n\n"
 
 def respond(sock):
     """
-    Respond (only) to GET
-
+    This server responds only to GET requests (not PUT, POST, or UPDATE).
     """
     sent = 0
     request = sock.recv(1024)  # We accept only short requests
@@ -69,13 +80,13 @@ def respond(sock):
 
     parts = request.split()
     if len(parts) > 1 and parts[0] == "GET":
-        transmit("HTTP/1.0 200 OK\n\n", sock)
+        transmit(STATUS_OK, sock)
         transmit(CAT, sock)
     else:
+        transmit(STATUS_NOT_IMPLEMENTED, sock)        
         transmit("\nI don't handle this request: {}\n".format(request), sock)
 
     sock.close()
-
     return
 
 def transmit(msg, sock):
@@ -87,7 +98,7 @@ def transmit(msg, sock):
     
 
 def main():
-    port = random.randint(5000,8000)
+    port = CONFIG.PORT
     sock = listen(port)
     print("Listening on port {}".format(port))
     print("Socket is {}".format(sock))
