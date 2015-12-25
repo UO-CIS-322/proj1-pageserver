@@ -1,0 +1,6 @@
+# Files we don't keep under git revision control 
+#
+__pycache__
+CONFIG.py
+.DS_STORE
+*.pyc
