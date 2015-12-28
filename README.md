@@ -18,9 +18,17 @@ A "getting started" project for CIS 322, software engineering 1 at University of
 * Fork this repository to create your own repository on Github.  (Read the 'git' documentation as needed.) 
 * Clone your repository onto the machine you want to work on.
 * Make and test your changes
-* Commit and push your changes to github
-* Give repository access to the instructor (user MichalYoung on github)
-* Turn in the URL to your repository so I can clone and test it for grading.
+* Revise this README.md file:  Erase what is no longer relevant, 
+  add identifying information, include the path to your working 
+  program on ix.  For example: 
+  ### Author: Lil (Nancy) McGill ###
+  ### Files: ~nancym/public_html/cis399se/htbin/proj1-pageserver
+      ( public_html/cis399se/htbin/ is a good place to put projects 
+        for this class, because later projects will need to access 
+        cgi-bin scripts there)
+* Commit and push ALL your changes to github (except those not under 
+  revision control; e.g., you push CONFIG.base.py but not CONFIG.py)
+* Turn in the github or URL to your repository
 
 ### Who do I talk to? ###
 
