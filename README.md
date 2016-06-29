@@ -12,7 +12,7 @@ A "getting started" project for CIS 322, software engineering 1 at University of
 
 * Designed for Unix, mostly interoperable on Linux (Ubuntu) or MacOS.  May also work on Windows, but no promises.  Consider creating a Linux virtual machine under Windows if you have trouble there, or just work on ix. 
 * You will need Python version 3.4 or higher. 
-* Designed to work in "user mode" (unprivileged).  Randomly chooses a port, so it could occasionally fail because the port is already in use.  
+* Designed to work in "user mode" (unprivileged).  Could  fail if port selected in CONFIG.py is already in use.  
 
 ### Assignment ###
 * Fork this repository to create your own repository on Github.  (Read the 'git' documentation as needed.) 
