@@ -7,17 +7,24 @@ A "getting started" project for CIS 322, software engineering 1 at University of
 * The objectives of this mini-project are:
   * Initial experience with GIT workflow:  Fork the project, make and test changes locally, commit;  turn in repository URL
   * Extend a tiny web server in Python, to check understanding of basic web architecture
+  * Use automated tests to check progress (plus manual tests for good measure)
 
 ### What do I need?  Where will it work? ###
 
-* Designed for Unix, mostly interoperable on Linux (Ubuntu) or MacOS.  May also work on Windows, but no promises.  Consider creating a Linux virtual machine under Windows if you have trouble there, or just work on ix. 
+* Designed for Unix, mostly interoperable on Linux (Ubuntu) or MacOS.
+  Target environment is Raspberry Pi. 
+  ** May also work on Windows, but no promises.  A Linux virtual machine
+   may work, but our experience has not been good; if you don't have a 
+   Raspberry Pi in hand yet, you may want to test on shared server ix. 
 * You will need Python version 3.4 or higher. 
 * Designed to work in "user mode" (unprivileged).  Could  fail if port selected in CONFIG.py is already in use.  
 
 ### Assignment ###
 * Fork this repository to create your own repository on Github.  (Read the 'git' documentation as needed.) 
 * Clone your repository onto the machine you want to work on.
-* Make and test your changes
+* Make and test your changes.  Use both automated tests (the script in
+the 'tests' directory) and some manual tests.  In addition to your
+development environment, test on a Raspberry Pi running Ubuntu. 
 * Revise this README.md file:  Erase what is no longer relevant, 
   add identifying information, include the path to your working 
   program on ix.  For example: 
