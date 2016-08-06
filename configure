@@ -1,0 +1,16 @@
+#! /bin/bash
+# 
+# Configure for a given target environment. 
+#
+echo "Selecting configuration file ..."
+(cd targets.d; ./choose_config.sh)
+
+#
+# Notes: This is a very minimal configuration step, but 
+# I've put it in a script called "configure" for 
+# consistency with many other systems that expect you to 
+# install a project with these commands: 
+# ./configure
+# make
+# make install
+# 
