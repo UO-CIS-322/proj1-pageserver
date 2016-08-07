@@ -20,7 +20,7 @@ opsys=`uname -v`
 
 if [[ $architecture =~ "arm" ]]; then
    echo "Configuring for Raspberry Pi versions 2 or 3"
-   cp CONFIG_pi.py ../CONFIG.pi
+   cp CONFIG_pi.py ../CONFIG.py
 elif [[ $opsys =~ "Darwin" ]]; then 
    echo "Configuring for Mac OS X"
    cp CONFIG_macosx.py ../CONFIG.py
