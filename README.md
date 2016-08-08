@@ -6,6 +6,7 @@ A "getting started" project for CIS 322, software engineering 1 at University of
 
 * The objectives of this mini-project are:
   * Initial experience with GIT workflow:  Fork the project, make and test changes locally, commit;  turn in repository URL
+  * Initial experience with automated configuration for turnkey installation
   * Extend a tiny web server in Python, to check understanding of basic web architecture
   * Use automated tests to check progress (plus manual tests for good measure)
 
@@ -17,7 +18,8 @@ A "getting started" project for CIS 322, software engineering 1 at University of
    may work, but our experience has not been good; if you don't have a 
    Raspberry Pi in hand yet, you may want to test on shared server ix. 
 * You will need Python version 3.4 or higher. 
-* Designed to work in "user mode" (unprivileged).  Could  fail if port selected in CONFIG.py is already in use.  
+* Designed to work in "user mode" (unprivileged), therefore using a port 
+  number above 1000 (rather than port 80 that a privileged web server would use)
 
 ### Assignment ###
 * Fork this repository to create your own repository on Github.  (Read the 'git' documentation as needed.) 
@@ -34,7 +36,14 @@ development environment, test on a Raspberry Pi running Ubuntu.
         for this class, because later projects will need to access 
         cgi-bin scripts there)
 * Commit and push ALL your changes to github (except those not under 
-  revision control; e.g., you push CONFIG.base.py but not CONFIG.py)
+  revision control)
+* Test deployment to other environments including Raspberry Pi.  Deployment 
+  should work "out of the box" with this command sequence: 
+  ** git clone <yourGitRepository> <targetDirectory>
+  ** cd <targetDirectory>
+  ** make configure
+  ** make run 
+  ** (control-C to stop program)
 * Turn in the github or URL to your repository
 
 ### Who do I talk to? ###

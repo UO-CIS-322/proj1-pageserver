@@ -14,6 +14,7 @@
 """
 
 import CONFIG    # Configuration options. Create by editing CONFIG.base.py
+import argparse  # Command line options (may override some configuration options)
 import socket    # Basic TCP/IP communication on the internet
 import _thread   # Response computation runs concurrently with main program 
 
@@ -98,8 +99,30 @@ def transmit(msg, sock):
         sent += sock.send( buff )
     
 
+###
+#
+# Run from command line
+#
+###
+
+def get_options():
+    """
+    Options from command line or configuration file.
+    Returns namespace object with option value for port
+    """
+    parser = argparse.ArgumentParser(description="Run trivial web server.")
+    parser.add_argument("--port", "-p",  dest="port", 
+                        help="Port to listen on; default is {}".format(CONFIG.PORT),
+                        type=int, default=CONFIG.PORT)
+    options = parser.parse_args()
+    if options.port <= 1000:
+        print("Warning: Ports 0..1000 are reserved by the operating system")
+    return options
+    
+
 def main():
-    port = CONFIG.PORT
+    options = get_options()
+    port = options.port
     sock = listen(port)
     print("Listening on port {}".format(port))
     print("Socket is {}".format(sock))
