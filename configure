@@ -14,3 +14,12 @@ echo "Selecting configuration file ..."
 # make
 # make install
 # 
+#
+# For our projects, we will normally use this sequence instead
+# make configure
+# make run 
+# 
+# (We have configuration, but we don't have compilations per se
+#  since we are working in Python, and we aren't installing the 
+#  application outside the working directory.) 
+# 
