@@ -1,0 +1,7 @@
+# Files we don't keep under git revision control 
+#
+__pycache__ # Junk left by Python 
+CONFIG.py  # Install with each deployment
+.DS_STORE  # MacOS metadata for things like position of folders in display
+*.pyc      # Python leaves these compiled files around
+solved.py  # My personal solution, not shared with students 
