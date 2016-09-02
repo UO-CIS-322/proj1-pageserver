@@ -1,6 +1,5 @@
 """
-Socket programming in Python
-  as an illustration of the basic mechanisms of a web server.
+  A trivial web server in Python. 
 
   Based largely on https://docs.python.org/3.4/howto/sockets.html
   This trivial implementation is not robust:  We have omitted decent
@@ -9,13 +8,15 @@ Socket programming in Python
 
   FIXME:
   Currently this program always serves an ascii graphic of a cat.
-  Change it to serve files if they end with .html and are in the current directory
+  Change it to serve files if they end with .html or .css, and are
+  located in ./pages  (where '.' is the directory from which this
+  program is run).  
 """
 
+import CONFIG    # Configuration options. Create by editing CONFIG.base.py
+import argparse  # Command line options (may override some configuration options)
 import socket    # Basic TCP/IP communication on the internet
-import random    # To pick a port at random, giving us some chance to pick a port not in use
 import _thread   # Response computation runs concurrently with main program 
-
 
 def listen(portnum):
     """
@@ -51,16 +52,28 @@ def serve(sock, func):
         _thread.start_new_thread(func, (clientsocket,))
 
 
+##
+## Starter version only serves cat pictures. In fact, only a
+## particular cat picture.  This one.
+##
 CAT = """
      ^ ^
    =(   )=
-   """
+"""
 
+## HTTP response codes, as the strings we will actually send. 
+##   See:  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+##   or    http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+## 
+STATUS_OK = "HTTP/1.0 200 OK\n\n"
+STATUS_FORBIDDEN = "HTTP/1.0 403 Forbidden\n\n"
+STATUS_NOT_FOUND = "HTTP/1.0 404 Not Found\n\n"
+STATUS_NOT_IMPLEMENTED = "HTTP/1.0 401 Not Implemented\n\n"
 
 def respond(sock):
     """
-    Respond (only) to GET
-
+    This server responds only to GET requests (not PUT, POST, or UPDATE).
+    Any valid GET request is answered with an ascii graphic of a cat. 
     """
     sent = 0
     request = sock.recv(1024)  # We accept only short requests
@@ -69,25 +82,47 @@ def respond(sock):
 
     parts = request.split()
     if len(parts) > 1 and parts[0] == "GET":
-        transmit("HTTP/1.0 200 OK\n\n", sock)
+        transmit(STATUS_OK, sock)
         transmit(CAT, sock)
     else:
+        transmit(STATUS_NOT_IMPLEMENTED, sock)        
         transmit("\nI don't handle this request: {}\n".format(request), sock)
 
     sock.close()
-
     return
 
 def transmit(msg, sock):
-    """It might take several sends to get the whole buffer out"""
+    """It might take several sends to get the whole message out"""
     sent = 0
     while sent < len(msg):
         buff = bytes( msg[sent: ], encoding="utf-8")
         sent += sock.send( buff )
     
 
+###
+#
+# Run from command line
+#
+###
+
+def get_options():
+    """
+    Options from command line or configuration file.
+    Returns namespace object with option value for port
+    """
+    parser = argparse.ArgumentParser(description="Run trivial web server.")
+    parser.add_argument("--port", "-p",  dest="port", 
+                        help="Port to listen on; default is {}".format(CONFIG.PORT),
+                        type=int, default=CONFIG.PORT)
+    options = parser.parse_args()
+    if options.port <= 1000:
+        print("Warning: Ports 0..1000 are reserved by the operating system")
+    return options
+    
+
 def main():
-    port = random.randint(5000,8000)
+    options = get_options()
+    port = options.port
     sock = listen(port)
     print("Listening on port {}".format(port))
     print("Socket is {}".format(sock))
