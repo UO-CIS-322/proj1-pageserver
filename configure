@@ -2,8 +2,8 @@
 # 
 # Configure for a given target environment. 
 #
-echo "Selecting configuration file ..."
-(cd targets.d; ./choose_config.sh)
+echo "Configuring"
+(cd config; ./choose_config.sh)
 
 #
 # Notes: This is a very minimal configuration step, but 
@@ -14,7 +14,6 @@ echo "Selecting configuration file ..."
 # make
 # make install
 # 
-#
 # For our projects, we will normally use this sequence instead
 # make configure
 # make run 

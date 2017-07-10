@@ -2,7 +2,7 @@
 #
 
 # Define lists of files we need
-CONFIGURATION = CONFIG.py 
+CONFIGURATION = config/host.ini
 
 # 'make run' will run our program
 # 
@@ -12,11 +12,11 @@ run:	$(CONFIGURATION) pageserver.py
 	## program with control-C
 
 # 'make configure' will run the configuration script, 
-# but only if CONFIG.py doesn't already exist. 
+# but only if config/host.ini doesn't already exist. 
 # 
 configure: $(CONFIGURATION)  
 
-CONFIG.py:
+$(CONFIGURATION):
 	bash ./configure
 	echo "Configuration complete"
 
@@ -31,5 +31,5 @@ clean:
 
 veryclean:
 	make clean
-	rm -f CONFIG.py
+	rm -f config/host.ini
 
