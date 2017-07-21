@@ -1,6 +1,7 @@
 # README #
 
-A "getting started" project for CIS 322, software engineering 1 at University of Oregon.
+A "getting started" project for CIS 322, introduction to software
+engineering,  at University of Oregon.
 
 ### What is this repository for? ###
 
@@ -16,10 +17,15 @@ A "getting started" project for CIS 322, software engineering 1 at University of
   Target environment is Raspberry Pi. 
   ** May also work on Windows, but no promises.  A Linux virtual machine
    may work, but our experience has not been good; if you don't have a 
-   Raspberry Pi in hand yet, you may want to test on shared server ix. 
+   Raspberry Pi in hand yet, you may want to test on shared server ix-dev.
 * You will need Python version 3.4 or higher. 
 * Designed to work in "user mode" (unprivileged), therefore using a port 
   number above 1000 (rather than port 80 that a privileged web server would use)
+
+* Windows 10 note:  The new Windows bash on ubuntu looks promising.
+  If you are running Windows 10, please give this a try and let me
+  know if the Ubuntu/bash environment is suitable for CIS 322
+  develpment. 
 
 ### Assignment ###
 * Fork this repository to create your own repository on Github.  (Read the 'git' documentation as needed, and create an account on Github if you don't have one.) 
@@ -40,7 +46,11 @@ development environment, test on a Raspberry Pi running Ubuntu.
   ** make configure
   ** make run 
   ** (control-C to stop program)
-* Turn in the github or URL to your repository
+* Check and revise your "credentials/credentials.ini" file.  My
+  grading robots will read this. Be precise. My grading robots
+  are not very good at guessing what you meant to write.
+* Turn in the credentials.ini file in Canvas.  My grading robots will
+  use this file to access your github repository.   
 
 ### Who do I talk to? ###
 

@@ -14,7 +14,10 @@
 """
 
 import configparser # Read .ini files for configuration
-import argparse  # Command line options (may override some configuration options)
+import argparse  # Command line options (may override configuration options)
+import logging   # Better than print statements
+  # See configuration of logging in get_options
+
 import socket    # Basic TCP/IP communication on the internet
 import _thread   # Response computation runs concurrently with main program 
 
@@ -47,7 +50,7 @@ def serve(sock, func):
         to the connected client, running concurrently in its own thread.
     """
     while True:
-        print("Attempting to accept a connection on {}".format(sock))
+        logging.info("Attempting to accept a connection on {}".format(sock))
         (clientsocket, address) = sock.accept()
         _thread.start_new_thread(func, (clientsocket,))
 
@@ -78,13 +81,14 @@ def respond(sock):
     sent = 0
     request = sock.recv(1024)  # We accept only short requests
     request = str(request, encoding='utf-8', errors='strict')
-    print("\nRequest was {}\n".format(request))
+    logging.info("\nRequest was {}\n".format(request))
 
     parts = request.split()
     if len(parts) > 1 and parts[0] == "GET":
         transmit(STATUS_OK, sock)
         transmit(CAT, sock)
     else:
+        logging.info("Unhandled request: {}".format(request))
         transmit(STATUS_NOT_IMPLEMENTED, sock)        
         transmit("\nI don't handle this request: {}\n".format(request), sock)
 
@@ -112,21 +116,46 @@ def get_options():
     """
     # Defaults from configuration files;
     #   on conflict, the last value read has precedence
-    config = configparser.ConfigParser()
-    config.read("config/app.ini")
-    config.read("config/host.ini")
-    config.read("config/credential.ini")
+    config = configparser.ConfigParser(inline_comment_prefixes=("#", ";"))
+    config.read("config/app.ini")    # General for this application
+    config.read("config/host.ini")   #  ... specific to this host
+    config.read("config/credentials.ini")  # ... author of program 
     target = config["DEFAULT"]["target"]
     port = int(config[target]["port"])
-    # Possibly overridden by command line argument
+    docroot = config["DEFAULT"]["docroot"]
+    loglevel = config["DEFAULT"]["logging"]
+    
+    # Command line arguments override configuration file
     parser = argparse.ArgumentParser(description="Run trivial web server.")
     parser.add_argument("--port", "-p",  dest="port", 
                         help="Port to listen on; default is {}"
                             .format(port),
                         type=int, default=port)
+    parser.add_argument("--docroot", "-r", dest="docroot", default=docroot, 
+                       help="Root of web documents directory; default {}"
+                         .format(docroot))
+    parser.add_argument("--logging", "-l", dest="logging", default=loglevel,
+                            choices=["debug", "warning", "info"],
+                            help="Log to level, warning < info < debug")
     options = parser.parse_args()
+
+    if options.logging == "debug":
+        logging.basicConfig(level=logging.DEBUG)
+    elif options.logging == "warning":
+        logging.basicConfig(level=logging.WARNING)
+    elif options.logging == "info":
+        logging.basicConfig(level=logging.INFO)
+    else:
+        logging.basicConfig(level=logging.DEBUG)
+        logging.warning("Bad logging level '{}', defaulting to debug"
+                            .format(options.logging))
+    
+
     if options.port <= 1000:
-        print("Warning: Ports 0..1000 are reserved by the operating system")
+        logging.warning(  ("Port {} selected. " + 
+                           " Ports 0..1000 are reserved \n" + 
+                           "by the operating system").format(options.port))
+
     return options
     
 
@@ -134,9 +163,10 @@ def main():
     options = get_options()
     port = options.port
     sock = listen(port)
-    print("Listening on port {}".format(port))
-    print("Socket is {}".format(sock))
+    logging.info("Listening on port {}".format(port))
+    logging.info("Socket is {}".format(sock))
     serve(sock, respond)
 
-main()
+if __name__ == "__main__":
+    main()
     
