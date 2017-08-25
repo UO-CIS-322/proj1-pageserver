@@ -29,6 +29,8 @@ import configparser
 import argparse
 import os
 
+HERE = os.path.dirname(__file__)
+
 def command_line_args():
     """Returns namespace with settings from command line"""
     log.debug("-> Command line args")
@@ -67,13 +69,18 @@ def config_file_args(config_file_paths, project=None):
     """
     log.debug("-> config file args")
     config = configparser.ConfigParser()
-    for path in config_file_paths: 
+    for path in config_file_paths:
+        relative = os.path.join(HERE,path)
         if os.path.exists(path):
             log.info("Configuring from {}".format(path))
             config.read(path)
+        elif os.path.exists(relative):
+            log.info("Configuring from {}".format(relative))
+            config.read(relative)
         else:
             log.info("No configuration file {}; skipping".format(path))
     section = project or "DEFAULT"
+    log.debug("Using configuration section {}".format(section))
     args = config[section]
     log.debug("<- config file args: {}".format(args))
     return args
