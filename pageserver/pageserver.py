@@ -13,8 +13,7 @@
   program is run).  
 """
 
-import configparser # Read .ini files for configuration
-import argparse  # Command line options (may override configuration options)
+import config    # Configure from .ini files and command line
 import logging   # Better than print statements
   # See configuration of logging in get_options
 
@@ -101,7 +100,6 @@ def transmit(msg, sock):
     while sent < len(msg):
         buff = bytes( msg[sent: ], encoding="utf-8")
         sent += sock.send( buff )
-    
 
 ###
 #
@@ -116,42 +114,10 @@ def get_options():
     """
     # Defaults from configuration files;
     #   on conflict, the last value read has precedence
-    config = configparser.ConfigParser(inline_comment_prefixes=("#", ";"))
-    config.read("config/app.ini")    # General for this application
-    config.read("config/host.ini")   #  ... specific to this host
-    config.read("config/credentials.ini")  # ... author of program 
-    target = config["DEFAULT"]["target"]
-    port = int(config[target]["port"])
-    docroot = config["DEFAULT"]["docroot"]
-    loglevel = config["DEFAULT"]["logging"]
-    
-    # Command line arguments override configuration file
-    parser = argparse.ArgumentParser(description="Run trivial web server.")
-    parser.add_argument("--port", "-p",  dest="port", 
-                        help="Port to listen on; default is {}"
-                            .format(port),
-                        type=int, default=port)
-    parser.add_argument("--docroot", "-r", dest="docroot", default=docroot, 
-                       help="Root of web documents directory; default {}"
-                         .format(docroot))
-    parser.add_argument("--logging", "-l", dest="logging", default=loglevel,
-                            choices=["debug", "warning", "info"],
-                            help="Log to level, warning < info < debug")
-    options = parser.parse_args()
+    options = config.configuration()
+    # We want: TARGET, PORT, DOCROOT, possibly LOGGING
 
-    if options.logging == "debug":
-        logging.basicConfig(level=logging.DEBUG)
-    elif options.logging == "warning":
-        logging.basicConfig(level=logging.WARNING)
-    elif options.logging == "info":
-        logging.basicConfig(level=logging.INFO)
-    else:
-        logging.basicConfig(level=logging.DEBUG)
-        logging.warning("Bad logging level '{}', defaulting to debug"
-                            .format(options.logging))
-    
-
-    if options.port <= 1000:
+    if options.PORT <= 1000:
         logging.warning(  ("Port {} selected. " + 
                            " Ports 0..1000 are reserved \n" + 
                            "by the operating system").format(options.port))
@@ -161,7 +127,7 @@ def get_options():
 
 def main():
     options = get_options()
-    port = options.port
+    port = options.PORT
     sock = listen(port)
     logging.info("Listening on port {}".format(port))
     logging.info("Socket is {}".format(sock))
