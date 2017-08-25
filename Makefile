@@ -12,8 +12,11 @@ install:
 # The "or true" tells 'make' not to complain about shutting down with Ctrl-C
 # 
 run:	pageserver/pageserver.py 
-	python3 pageserver/pageserver.py || true 
+	python3 pageserver/pageserver.py & echo $$! >,pypid
+	echo "----> Kill with: kill: " `cat ,pypid`
 
+kill:	,pypid
+	kill `cat ,pypid`
 
 # 'clean' and 'veryclean' are typically used before checking 
 # things into git.  'clean' should leave the project ready to 
