@@ -1,24 +1,25 @@
 """
-  A trivial web server in Python. 
+  A trivial web server in Python.
 
   Based largely on https://docs.python.org/3.4/howto/sockets.html
   This trivial implementation is not robust:  We have omitted decent
   error handling and many other things to keep the illustration as simple
-  as possible. 
+  as possible.
 
   FIXME:
   Currently this program always serves an ascii graphic of a cat.
   Change it to serve files if they end with .html or .css, and are
   located in ./pages  (where '.' is the directory from which this
-  program is run).  
+  program is run).
 """
 
 import config    # Configure from .ini files and command line
 import logging   # Better than print statements
-  # See configuration of logging in get_options
+# See configuration of logging in get_options
 
 import socket    # Basic TCP/IP communication on the internet
-import _thread   # Response computation runs concurrently with main program 
+import _thread   # Response computation runs concurrently with main program
+
 
 def listen(portnum):
     """
@@ -36,6 +37,7 @@ def listen(portnum):
     serversocket.bind(('', portnum))
     serversocket.listen(1)    # A real server would have multiple listeners
     return serversocket
+
 
 def serve(sock, func):
     """
@@ -55,27 +57,28 @@ def serve(sock, func):
 
 
 ##
-## Starter version only serves cat pictures. In fact, only a
-## particular cat picture.  This one.
+# Starter version only serves cat pictures. In fact, only a
+# particular cat picture.  This one.
 ##
 CAT = """
      ^ ^
    =(   )=
 """
 
-## HTTP response codes, as the strings we will actually send. 
-##   See:  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-##   or    http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-## 
+# HTTP response codes, as the strings we will actually send.
+# See:  https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+# or    http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+##
 STATUS_OK = "HTTP/1.0 200 OK\n\n"
 STATUS_FORBIDDEN = "HTTP/1.0 403 Forbidden\n\n"
 STATUS_NOT_FOUND = "HTTP/1.0 404 Not Found\n\n"
 STATUS_NOT_IMPLEMENTED = "HTTP/1.0 401 Not Implemented\n\n"
 
+
 def respond(sock):
     """
     This server responds only to GET requests (not PUT, POST, or UPDATE).
-    Any valid GET request is answered with an ascii graphic of a cat. 
+    Any valid GET request is answered with an ascii graphic of a cat.
     """
     sent = 0
     request = sock.recv(1024)  # We accept only short requests
@@ -88,24 +91,26 @@ def respond(sock):
         transmit(CAT, sock)
     else:
         logging.info("Unhandled request: {}".format(request))
-        transmit(STATUS_NOT_IMPLEMENTED, sock)        
+        transmit(STATUS_NOT_IMPLEMENTED, sock)
         transmit("\nI don't handle this request: {}\n".format(request), sock)
 
     sock.close()
     return
 
+
 def transmit(msg, sock):
     """It might take several sends to get the whole message out"""
     sent = 0
     while sent < len(msg):
-        buff = bytes( msg[sent: ], encoding="utf-8")
-        sent += sock.send( buff )
+        buff = bytes(msg[sent:], encoding="utf-8")
+        sent += sock.send(buff)
 
 ###
 #
 # Run from command line
 #
 ###
+
 
 def get_options():
     """
@@ -118,12 +123,12 @@ def get_options():
     # We want: TARGET, PORT, DOCROOT, possibly LOGGING
 
     if options.PORT <= 1000:
-        logging.warning(  ("Port {} selected. " + 
-                           " Ports 0..1000 are reserved \n" + 
-                           "by the operating system").format(options.port))
+        logging.warning(("Port {} selected. " +
+                         " Ports 0..1000 are reserved \n" +
+                         "by the operating system").format(options.port))
 
     return options
-    
+
 
 def main():
     options = get_options()
@@ -133,6 +138,6 @@ def main():
     logging.info("Socket is {}".format(sock))
     serve(sock, respond)
 
+
 if __name__ == "__main__":
     main()
-    
