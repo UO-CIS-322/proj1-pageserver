@@ -94,6 +94,7 @@ def respond(sock):
         transmit(STATUS_NOT_IMPLEMENTED, sock)
         transmit("\nI don't handle this request: {}\n".format(request), sock)
 
+    sock.shutdown(socket.SHUT_RDWR)
     sock.close()
     return
 
@@ -120,7 +121,7 @@ def get_options():
     # Defaults from configuration files;
     #   on conflict, the last value read has precedence
     options = config.configuration()
-    # We want: TARGET, PORT, DOCROOT, possibly LOGGING
+    # We want: PORT, DOCROOT, possibly LOGGING
 
     if options.PORT <= 1000:
         logging.warning(("Port {} selected. " +
