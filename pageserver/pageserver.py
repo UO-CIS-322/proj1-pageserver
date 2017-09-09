@@ -15,7 +15,10 @@
 
 import config    # Configure from .ini files and command line
 import logging   # Better than print statements
-# See configuration of logging in get_options
+logging.basicConfig(format='%(levelname)s:%(message)s',
+                    level=logging.INFO)
+log = logging.getLogger(__name__)
+# Logging level may be overridden by configuration 
 
 import socket    # Basic TCP/IP communication on the internet
 import _thread   # Response computation runs concurrently with main program
@@ -51,7 +54,7 @@ def serve(sock, func):
         to the connected client, running concurrently in its own thread.
     """
     while True:
-        logging.info("Attempting to accept a connection on {}".format(sock))
+        log.info("Attempting to accept a connection on {}".format(sock))
         (clientsocket, address) = sock.accept()
         _thread.start_new_thread(func, (clientsocket,))
 
@@ -83,14 +86,15 @@ def respond(sock):
     sent = 0
     request = sock.recv(1024)  # We accept only short requests
     request = str(request, encoding='utf-8', errors='strict')
-    logging.info("\nRequest was {}\n".format(request))
+    log.info("--- Received request ----")
+    log.info("Request was {}\n***\n".format(request))
 
     parts = request.split()
     if len(parts) > 1 and parts[0] == "GET":
         transmit(STATUS_OK, sock)
         transmit(CAT, sock)
     else:
-        logging.info("Unhandled request: {}".format(request))
+        log.info("Unhandled request: {}".format(request))
         transmit(STATUS_NOT_IMPLEMENTED, sock)
         transmit("\nI don't handle this request: {}\n".format(request), sock)
 
@@ -124,7 +128,7 @@ def get_options():
     # We want: PORT, DOCROOT, possibly LOGGING
 
     if options.PORT <= 1000:
-        logging.warning(("Port {} selected. " +
+        log.warning(("Port {} selected. " +
                          " Ports 0..1000 are reserved \n" +
                          "by the operating system").format(options.port))
 
@@ -134,9 +138,11 @@ def get_options():
 def main():
     options = get_options()
     port = options.PORT
+    if options.DEBUG:
+        log.setLevel(logging.DEBUG)
     sock = listen(port)
-    logging.info("Listening on port {}".format(port))
-    logging.info("Socket is {}".format(sock))
+    log.info("Listening on port {}".format(port))
+    log.info("Socket is {}".format(sock))
     serve(sock, respond)
 
 

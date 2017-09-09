@@ -15,7 +15,6 @@ variables.  To resolve this conflict, we convert all configuration
 variables from .ini files to upper case.
 
 Potential extensions:
-  - Read multiple configuration files? (YES)
   - Use environment variables?  With what precedence relative
     to configuration files? (NO, for now)
 """
@@ -26,7 +25,7 @@ import argparse
 import os
 import logging
 logging.basicConfig(format='%(levelname)s:%(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 log = logging.getLogger(__name__)
 HERE = os.path.dirname(__file__)
