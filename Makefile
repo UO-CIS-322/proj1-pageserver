@@ -11,12 +11,18 @@ install:
 # does not already exist, it will be built.
 # The "or true" tells 'make' not to complain about shutting down with Ctrl-C
 # 
-run:	pageserver/pageserver.py 
-	python3 pageserver/pageserver.py & echo $$! >,pypid
-	echo "----> Kill with: kill: " `cat ,pypid`
+run:	pageserver/pageserver.py
+	python3 pageserver/pageserver.py 
 
-kill:	,pypid
-	kill `cat ,pypid`
+# When run as "make start" and "make stop", all arguments come from 
+# the configuration file.  The 'start.sh' and 'stop.sh' scripts can also be 
+# run directly, and then start.sh can take other command line arguments. 
+#
+start:	pageserver/pageserver.py 
+	bash start.sh
+
+stop:	,pypid
+	bash stop.sh
 
 # 'clean' and 'veryclean' are typically used before checking 
 # things into git.  'clean' should leave the project ready to 
